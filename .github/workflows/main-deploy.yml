@@ -61,4 +61,4 @@ jobs:
         run: |
           aws s3 cp \
             --region ap-northeast-2 \
-            ./spring-build.zip s3://latteve-cicd-test
+            ./cicd-test-build.zip s3://latteve-cicd-test
