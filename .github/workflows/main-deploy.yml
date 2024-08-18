@@ -44,9 +44,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         
+      # 수정
       - name: Make zip file
         run: |
           mkdir deploy
+          cp ./appspec.yml ./deploy/
+          cp ./Dockerfile ./deploy/
+          cp ./scripts/*.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           zip -r -qq -j ./cicd-test-build.zip ./deploy
           
@@ -62,3 +66,10 @@ jobs:
           aws s3 cp \
             --region ap-northeast-2 \
             ./cicd-test-build.zip s3://latteve-cicd-test
+
+      # 추가
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name cicd-test-deploy
+          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-group-name cicd-test-deploy-group
+          --s3-location bucket=latteve-cicd-test,bundleType=zip,key=cicd-test-build.zip
